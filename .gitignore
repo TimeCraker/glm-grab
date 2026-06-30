@@ -1,0 +1,33 @@
+# ===== Chrome profile 完整目录(223M) =====
+# Playwright 持久化上下文,绝对不能进仓库
+glm_profile/
+
+# ===== 触发文件(运行时创建) =====
+GO.txt
+
+# ===== Python 缓存 =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.venv/
+venv/
+env/
+
+# ===== 日志和临时文件 =====
+*.log
+*.tmp
+*.swp
+*.swo
+
+# ===== IDE =====
+.vscode/
+.idea/
+*.iml
+
+# ===== 系统 =====
+.DS_Store
+Thumbs.db
+desktop.ini
