@@ -1,199 +1,154 @@
-﻿# [![CI](https://github.com/TimeCraker/glm-grab/actions/workflows/ci.yml/badge.svg)](https://github.com/TimeCraker/glm-grab/actions/workflows/ci.yml)
+﻿<div align="center">
 
-GLM Coding 抢购脚本
+<img src="https://raw.githubusercontent.com/TimeCraker/glm-grab/main/.github/banner.svg" alt="GLM Grab Banner" width="100%"/>
 
-> 智谱 GLM Coding 套餐（Lite / Pro / Max）补货时自动抢 — 设好时间就睡，09:58 自动进入高频模式
+# ⚡ GLM Coding 抢购脚本
 
-<p align="center">
-  <img alt="Python" src="https://img.shields.io/badge/Python-3.8%2B-3776ab?style=for-the-badge&logo=python&logoColor=white" />
-  <img alt="Playwright" src="https://img.shields.io/badge/Playwright-Async-2ead33?style=for-the-badge&logo=playwright&logoColor=white" />
-  <img alt="License" src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" />
-  <img alt="Version" src="https://img.shields.io/badge/version-v2.0-blue?style=for-the-badge" />
-  <img alt="Tabs" src="https://img.shields.io/badge/并行-4%20tabs-ff6b6b?style=for-the-badge" />
-</p>
+**智谱 GLM Coding 套餐（Lite / Pro / Max）补货时自动抢 — 设好时间就睡**
 
----
+[![CI](https://github.com/TimeCraker/glm-grab/actions/workflows/ci.yml/badge.svg)](https://github.com/TimeCraker/glm-grab/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-22c55e.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-≥3.12-3776ab?logo=python&logoColor=white)](https://www.python.org)
+[![Playwright](https://img.shields.io/badge/Playwright-async-2e8555?logo=playwright&logoColor=white)](https://playwright.dev)
 
-## 🎯 抢购策略全景
+> **v2 优化（2026-06-18 实战后）**：4 tab 并发 · 09:58 自动进入高频模式 · 400ms 刷新 · 命中即停
 
-```mermaid
-flowchart TD
-    Start([🕐 定时启动<br/>AUTO_START_MIN_BEFORE]) --> Login{🔐 检测登录}
-    Login -->|未登录| Wait1[⏸ 等待手动登录]
-    Wait1 --> Login
-    Login -->|已登录| Plan[📋 切到目标套餐<br/>连续包月]
-    Plan --> Loop[🔄 主循环]
-
-    Loop -->|每 400ms| Refresh[🔃 刷新页面]
-    Refresh --> Scan{🔍 扫描按钮}
-    Scan -->|找到购买按钮| Click[👆 点击按钮]
-    Scan -->|售罄状态| Soldout[⚠ 识别售罄]
-    Scan -->|未到时间| Wait[⏱ 等待]
-
-    Click --> Check{✅ 是真支付页?}
-    Check -->|是 + 个人套餐| Win[🏆 抢到！]
-    Check -->|是 + 团队/企业| Reject[❌ 拒绝]
-    Check -->|否| Loop
-
-    Soldout --> Next[🕐 等下波补货]
-    Next --> Loop
-
-    Win --> Signal[📢 创建 GO.txt]
-    Signal --> Kill[⚡ 关其他 tab]
-    Kill --> Done([✅ 完成])
-
-    style Start fill:#fef3c7,stroke:#f59e0b
-    style Win fill:#dcfce7,stroke:#22c55e,color:#166534
-    style Done fill:#dcfce7,stroke:#22c55e,color:#166534
-    style Reject fill:#fee2e2,stroke:#ef4444,color:#991b1b
-    style Soldout fill:#fed7aa,stroke:#ea580c,color:#7c2d12
-```
-
-**v2 核心优化**（2026-06-18 实战后）：
-
-| 优化点 | v1 | v2 | 效果 |
-|--------|----|----|------|
-| 并行 tab 数 | 1 | **4** | 命中率 ×4 |
-| 刷新间隔 | 800ms | **400ms** | 响应速度 ×2 |
-| 按钮文字匹配 | 6 种 | **16 种** | 覆盖所有"立即开通/抢购/抢"变体 |
-| 售罄识别 | 无 | **6 种关键词** | 区分"今日售罄 vs 等下波补货" |
-| 真支付页判断 | URL 字符串 | **三重检查** | 过滤团队/企业版误报 |
-| 触发协调 | 无 | **GO.txt 信号** | 一个 tab 抢到 → 其他 tab 立刻关 |
+</div>
 
 ---
 
-## ✨ 特性
+## 📑 目录
 
-- 🎯 **多 tab 并行**：4 个 tab 同时抢（推荐 3-5，越多越快但越容易被 ban）
-- ⏰ **自动定时启动**：设好 `RESTOCK_TIME` 就睡，提前 N 分钟自动进入高频模式
-- 🔍 **智能按钮匹配**：覆盖 16 种中文/英文购买按钮文案
-- 🚫 **三重支付页校验**：过滤团队/企业版误报，只抢个人套餐
-- 📢 **触发文件协调**：赢家通过 `GO.txt` 信号通知其他 tab 关闭
-- 🧠 **售罄智能识别**：区分"今日售罄"和"等下波补货"，避免无效重试
-- 🛡 **登录态检测**：自动识别登录/未登录，未登录时等待
+- [⚡ 核心特性](#-核心特性)
+- [🕐 抢购时序图](#-抢购时序图)
+- [🚀 快速开始](#-快速开始)
+- [⚙️ 配置项](#-配置项)
+- [🧠 v2 优化点](#-v2-优化点)
+- [⚠️ 风险与免责](#-风险与免责)
+- [📜 License](#-license)
+
+---
+
+## ⚡ 核心特性
+
+| 特性 | 说明 | 价值 |
+|------|------|------|
+| 🕐 **定时自动启动** | 提前 2 分钟开 tab，无需守在电脑前 | 设好就睡 |
+| 🔥 **多 tab 并发** | 默认 4 个 tab 同时抢，命中率 4× | 提高成功概率 |
+| ⚡ **高频扫描** | 400ms 刷新 + 100ms 按钮扫描 | 抢在 0.5 秒内 |
+| 🎯 **智能识别** | 16 种按钮文字（"立即开通"/"抢购"/"补货"…） | 抗 UI 改版 |
+| 🛑 **命中即停** | 一个 tab 抢到 → 其他 tab 立即停 | 避免重复下单 |
+| 🪟 **Windows 友好** | emoji / 特殊字符不乱码（stdout 重配 utf-8） | 双击 .bat 就能跑 |
+
+---
+
+## 🕐 抢购时序图
+
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/TimeCraker/glm-grab/main/.github/architecture.svg" alt="GLM Grab Timeline" width="100%"/>
+
+</div>
+
+**5 个阶段**：
+
+| 阶段 | 时间 | 行为 |
+|------|------|------|
+| 💤 IDLE | `< 09:56` | 监听 GO.txt 触发信号 |
+| ⏰ WARM-UP | `09:56 ~ 09:58` | 打开 4 个 tab · 加载页面 |
+| 🔥 HIGH-FREQ | `09:58 ~ 10:00` | 400ms 循环 · 扫描按钮 |
+| ⚡ FIRE | `10:00:00` | 命中 → 4 tab 并发点击 |
+| ✅ DONE | `10:00:00.x` | 订单确认页 + 提醒 |
 
 ---
 
 ## 🚀 快速开始
 
-### 前置
-
-- Python 3.8+
-- Playwright（`pip install playwright` 后 `playwright install chromium`）
-- 智谱 GLM Coding 账号（已登录的 Chrome profile）
-
-### 安装
+### 1. 安装 Playwright
 
 ```bash
-cd glm-grab
 pip install playwright
 playwright install chromium
 ```
 
-### 配置（编辑 `grab.py` 顶部）
+### 2. 编辑 `grab.py` 顶部的配置
 
 ```python
-# ===================== 你要改的 =====================
-PLAN = "Pro"                  # 套餐: "Lite" / "Pro" / "Max"
-RESTOCK_TIME = "10:00:00"     # 补货时间（24h 制）
-AUTO_START_MIN_BEFORE = 2     # 提前几分钟开始刷（推荐 1-3）
-TAB_COUNT = 4                 # 并行 tab 数（推荐 3-5）
-REFRESH_INTERVAL = 0.4        # 页面刷新间隔（秒）
-SCAN_INTERVAL = 0.1           # 按钮扫描间隔（秒）
+PLAN = "Pro"                    # 套餐: "Lite" / "Pro" / "Max"
+RESTOCK_TIME = "10:00:00"       # 补货时间（24h 制）
+AUTO_START_MIN_BEFORE = 2       # 提前几分钟开始刷（推荐 1-3）
+TAB_COUNT = 4                   # 并发 tab 数（推荐 3-5）
 ```
 
-### 启动 Chrome（首次需手动登录）
+### 3. 登录 + 启动
 
 ```bash
-# 用 Playwright 自带的 Chromium 启动并登录智谱账号
-python -c "
-from playwright.sync_api import sync_playwright
-with sync_playwright() as p:
-    browser = p.chromium.launch_persistent_context(
-        './glm_profile',
-        headless=False,
-    )
-    page = browser.pages[0]
-    page.goto('https://bigmodel.cn/glm-coding')
-    input('登录完成后按回车...')
-    browser.close()
-"
-```
-
-> **重要**：`./glm_profile` 目录会保存登录态，**已在 `.gitignore` 中**（223MB Chrome profile 不能进仓库）。
-
-### 运行
-
-```bash
+# 第一步：先打开浏览器手动登录一次（保存 cookie）
+# 第二步：开始抢购
 python grab.py
-# 设好 RESTOCK_TIME 和 TAB_COUNT，去睡觉
 ```
 
-到点脚本会：
-1. 提前 `AUTO_START_MIN_BEFORE` 分钟开始高频刷新
-2. 4 个 tab 并行扫描"购买"按钮
-3. 一个 tab 抢到 → 立即写 `GO.txt` → 其他 tab 检测到信号 → 立刻关闭
-4. 整个过程打印详细日志
+启动后脚本会：
+- 现在时间 → 等待到 `RESTOCK_TIME - AUTO_START_MIN_BEFORE`
+- 自动开 4 个 tab · 进入高频模式
+- 命中按钮 → 立即点击 → 通知你
+
+### 4. 远程触发（可选）
+
+在你的 `grab.py` 所在目录新建空文件 `GO.txt` → 脚本立即进入高频模式（不等定时）。
+
+适合：**先在手机/另一台机器 touch 文件，立刻开始抢**。
 
 ---
 
-## 🏗 三重支付页校验（避免误报）
+## ⚙️ 配置项
 
-```python
-# grab.py 中的 is_payment_url() 三重检查
-# 1. 拒绝: URL 含 team/enterprise/团队/企业 → 绝对误报
-# 2. 域名变了 + 是 alipay/wxpay/tenpay → 真支付页
-# 3. 仍在 bigmodel.cn 下,路径含 order/checkout/pay + 不是 /glm-coding + 不是 team → 真个人支付页
-```
+| 变量 | 默认 | 范围 | 作用 |
+|------|------|------|------|
+| `PLAN` | `"Pro"` | `Lite`/`Pro`/`Max` | 套餐等级（仅用于日志标识） |
+| `RESTOCK_TIME` | `"10:00:00"` | `HH:MM:SS` | 补货时间（24h） |
+| `AUTO_START_MIN_BEFORE` | `2` | `1-3` | 提前几分钟开 tab |
+| `TAB_COUNT` | `4` | `1-5` | 并发 tab 数（>5 易风控） |
+| `REFRESH_INTERVAL` | `0.4` | `0.2-1.0` | 页面刷新间隔（秒） |
+| `SCAN_INTERVAL` | `0.1` | `0.05-0.3` | 按钮扫描间隔（秒） |
+| `TRIGGER_FILE` | `"GO.txt"` | path | 远程触发文件名 |
 
-| URL 模式 | 判定 | 原因 |
-|----------|------|------|
-| `bigmodel.cn/glm-coding/...` | ❌ 拒绝 | 还在套餐页,没跳走 |
-| `checkout.bigmodel.cn/team/...` | ❌ 拒绝 | 团队版,不是个人套餐 |
-| `alipay.com/.../pay/...` | ✅ 通过 | 跳到支付宝支付页 |
-| `wxpay.wx.qq.com/...` | ✅ 通过 | 跳到微信支付页 |
-| `bigmodel.cn/checkout/personal/...` | ✅ 通过 | 站内个人支付页 |
+**调优建议**：
 
----
-
-## 🛠 关键参数调优
-
-| 参数 | 保守值 | 推荐值 | 激进值 | 说明 |
-|------|--------|--------|--------|------|
-| `TAB_COUNT` | 2 | **4** | 6 | 并行 tab 数,越多越快但越容易被 ban |
-| `REFRESH_INTERVAL` | 0.8s | **0.4s** | 0.2s | 刷新间隔,越短响应越快 |
-| `SCAN_INTERVAL` | 0.2s | **0.1s** | 0.05s | DOM 扫描间隔 |
-| `AUTO_START_MIN_BEFORE` | 5 | **2** | 1 | 提前启动时间 |
-
-> ⚠️ 激进值可能触发智谱风控（IP 临时封禁），建议从推荐值开始。
+- 网络差 → `TAB_COUNT = 3` · `REFRESH_INTERVAL = 0.6`
+- 风控严 → `TAB_COUNT = 2` · 错峰 0.5-1.5s 随机
+- 抢救市（如首发） → `TAB_COUNT = 5` · `REFRESH_INTERVAL = 0.3`
 
 ---
 
-## 📁 文件结构
+## 🧠 v2 优化点
 
-```
-glm-grab/
-├── grab.py                 # 主脚本（381 行，含所有抢购逻辑）
-├── glm_profile/            # Chrome 持久化 profile（git ignore,223M）
-│   ├── Default/
-│   ├── Crashpad/
-│   ├── BrowserMetrics-spare.pma
-│   └── ...                 # Playwright 启动时创建
-├── GO.txt                  # 触发文件（其他 tab 抢到时创建）
-└── README.md
-```
+| 优化 | v1 | v2 | 收益 |
+|------|-----|-----|------|
+| 并发 tab | 1 | 4 | 命中率 ×4 |
+| 刷新间隔 | 800ms | 400ms | 提早 400ms 命中 |
+| 自动启动 | 手动 | 提前 2 分钟定时 | 解放双手 |
+| 按钮识别 | 2 种文字 | 16 种文字 | 抗 UI 改版 |
+| 命中策略 | 4 tab 都点 | 命中即停 | 避免重复订单 |
+| 智能判断 | 无 | "今日已抢 vs 等下次补货" | 减少无效刷新 |
 
 ---
 
-## 🛡 法律与合规
+## ⚠️ 风险与免责
 
-- ⚠️ **仅供学习研究**：本脚本仅用于个人抢购场景
-- ⚠️ **遵守平台协议**：使用前请阅读智谱 GLM Coding 用户协议
-- ⚠️ **不保证 100% 抢到**：高并发场景下，平台可能限流或封号
-- ⚠️ **风险自担**：因使用本脚本造成的任何后果，由使用者承担
+- **本脚本仅供学习研究使用**，请遵守 [智谱 GLM Coding 用户协议](https://www.zhipuai.cn/)
+- 高频请求可能触发智谱风控（IP / 账号限流），后果自负
+- 商品售罄/库存变动/页面改版等情况脚本**无法保证 100% 成功**
+- 商业使用请购买官方 API（[智谱开放平台](https://open.bigmodel.cn/)）
 
 ---
 
-## 📄 License
+## 📜 License
 
-MIT © TimeCraker
+MIT License — 详见 [LICENSE](LICENSE)。
+
+<div align="center">
+
+**⚡ 设好时间就睡，剩下交给脚本 ⚡**
+
+</div>

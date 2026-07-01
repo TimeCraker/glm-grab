@@ -1,0 +1,75 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 320" width="1280" height="320">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7f1d1d"/>
+      <stop offset="50%" stop-color="#991b1b"/>
+      <stop offset="100%" stop-color="#450a0a"/>
+    </linearGradient>
+    <linearGradient id="bolt" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fde047"/>
+      <stop offset="50%" stop-color="#facc15"/>
+      <stop offset="100%" stop-color="#ca8a04"/>
+    </linearGradient>
+    <radialGradient id="explosion" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fde047" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#fde047" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="3"/></filter>
+  </defs>
+
+  <rect width="1280" height="320" fill="url(#bg)"/>
+
+  <!-- explosion background -->
+  <circle cx="640" cy="160" r="320" fill="url(#explosion)"/>
+
+  <!-- speed lines -->
+  <g stroke="#fde047" stroke-width="1" opacity="0.3">
+    <line x1="100" y1="80" x2="1180" y2="80"/>
+    <line x1="100" y1="120" x2="1180" y2="120"/>
+    <line x1="100" y1="200" x2="1180" y2="200"/>
+    <line x1="100" y1="240" x2="1180" y2="240"/>
+  </g>
+
+  <!-- lightning bolt center -->
+  <g transform="translate(640, 160)">
+    <path d="M -30 -80 L 20 -20 L -10 -10 L 30 80 L -20 20 L 10 10 Z" fill="url(#bolt)" stroke="#fde047" stroke-width="2" filter="url(#glow)"/>
+  </g>
+
+  <!-- title -->
+  <text x="640" y="60" text-anchor="middle" font-family="-apple-system,Inter,sans-serif" font-size="48" font-weight="900" fill="#fef3c7" letter-spacing="-1">GLM Coding 抢购脚本</text>
+  <text x="640" y="105" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="16" font-weight="600" fill="#fde047" letter-spacing="6">RESTOCK AUTO-GRAB · v2</text>
+
+  <!-- tagline -->
+  <text x="640" y="140" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" fill="#fecaca">智谱 GLM Coding 套餐补货时自动抢 — 设好时间就睡</text>
+
+  <!-- feature pills -->
+  <g transform="translate(640, 180)" font-family="ui-monospace,SF Mono,monospace" font-size="11" font-weight="700">
+    <g transform="translate(-340, 0)">
+      <rect x="-55" y="-12" width="110" height="24" rx="12" fill="#fde047" fill-opacity="0.15" stroke="#fde047" stroke-width="1"/>
+      <text x="0" y="5" text-anchor="middle" fill="#fde047">4 TABS</text>
+    </g>
+    <g transform="translate(-170, 0)">
+      <rect x="-55" y="-12" width="110" height="24" rx="12" fill="#fde047" fill-opacity="0.15" stroke="#fde047" stroke-width="1"/>
+      <text x="0" y="5" text-anchor="middle" fill="#fde047">400MS 刷新</text>
+    </g>
+    <g transform="translate(0, 0)">
+      <rect x="-55" y="-12" width="110" height="24" rx="12" fill="#fde047" fill-opacity="0.15" stroke="#fde047" stroke-width="1"/>
+      <text x="0" y="5" text-anchor="middle" fill="#fde047">AUTO 启动</text>
+    </g>
+    <g transform="translate(170, 0)">
+      <rect x="-55" y="-12" width="110" height="24" rx="12" fill="#fde047" fill-opacity="0.15" stroke="#fde047" stroke-width="1"/>
+      <text x="0" y="5" text-anchor="middle" fill="#fde047">16 关键词</text>
+    </g>
+    <g transform="translate(340, 0)">
+      <rect x="-55" y="-12" width="110" height="24" rx="12" fill="#fde047" fill-opacity="0.15" stroke="#fde047" stroke-width="1"/>
+      <text x="0" y="5" text-anchor="middle" fill="#fde047">0 失败</text>
+    </g>
+  </g>
+
+  <!-- footer info -->
+  <g font-family="ui-monospace,SF Mono,monospace" font-size="11">
+    <text x="60" y="60" fill="#fca5a5">⚡ playwright + asyncio</text>
+    <text x="1220" y="60" text-anchor="end" fill="#fca5a5">github.com/TimeCraker/glm-grab</text>
+    <text x="640" y="290" text-anchor="middle" fill="#7f1d1d" font-size="9" letter-spacing="2">仅供学习研究使用 · 请遵守智谱 GLM Coding 用户协议</text>
+  </g>
+</svg>
