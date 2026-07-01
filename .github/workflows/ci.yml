@@ -1,0 +1,30 @@
+﻿name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  syntax:
+    name: Syntax Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Bytecode compile
+        run: python -m py_compile grab.py
+
+      - name: Install playwright
+        run: pip install playwright
+
+      - name: Import check
+        run: python -c "import playwright; print('playwright', playwright.__version__)"

@@ -1,4 +1,6 @@
-# GLM Coding 抢购脚本
+﻿# [![CI](https://github.com/TimeCraker/glm-grab/actions/workflows/ci.yml/badge.svg)](https://github.com/TimeCraker/glm-grab/actions/workflows/ci.yml)
+
+GLM Coding 抢购脚本
 
 > 智谱 GLM Coding 套餐（Lite / Pro / Max）补货时自动抢 — 设好时间就睡，09:58 自动进入高频模式
 
